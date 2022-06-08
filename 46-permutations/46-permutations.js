@@ -4,19 +4,20 @@
  */
 var permute = function(nums) {
     //Strategy: recursion
-    //Recurse over 'number in the last slot'
+    //Recurse over the position of the last number in nums. 
     if (nums.length === 1) {
         return [nums]; 
     } else {
-        let res = []; 
-        for (let i = 0; i < nums.length; i++) {
-            let withoutCur = [...nums.slice(0, i), ...nums.slice(i+1)];
-            let curToBack = permute(withoutCur).map(perm => {
-                perm.push(nums[i]);
-                return perm; 
-            });
-            curToBack.forEach(perm => res.push(perm));
-        }
+        const res = []; 
+        let last = nums.pop(); 
+        const withoutLast = permute(nums);
+        withoutLast.forEach(perm => {
+            for (let i = 0; i <= perm.length; i++) {
+                const permCopy = [...perm];
+                permCopy.splice(i, 0, last);
+                res.push(permCopy);
+            }
+        });
         return res; 
     }    
 };
