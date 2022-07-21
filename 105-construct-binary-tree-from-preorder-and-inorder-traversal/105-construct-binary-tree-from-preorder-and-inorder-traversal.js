@@ -13,6 +13,11 @@
  */
 var buildTree = function(preorder, inorder) {
     
+    //time optimizer: build a hash of inorder indices. 
+    const memoizedIndices = {}; 
+    inorder.forEach((v, i) => memoizedIndices[v] = i); 
+    
+    //recursive helper
     function buildTreeUtil(pLo, iLo, num) {
           //use recursion!
         //base case 1: relevant segment of preorder and inorder are empty. 
@@ -30,7 +35,7 @@ var buildTree = function(preorder, inorder) {
 
         //general case    
         //search for the index of root in inorder. 
-        const i = indexInRange(rootVal, inorder, iLo, iLo + num - 1);
+        const i = memoizedIndices[rootVal];
 
         //find num, pLo, iLo for the left branch
         const leftNum = i - iLo; 
@@ -53,12 +58,3 @@ var buildTree = function(preorder, inorder) {
     
     return buildTreeUtil(0, 0, preorder.length);
 };
-
-function indexInRange(val, arr, lo, hi) {
-    for (let i = lo; i <= hi; i++) {
-        if (arr[i] === val) {
-            return i; 
-        }
-    }
-    return -1; 
-}
