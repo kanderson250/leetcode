@@ -12,40 +12,53 @@
  * @return {TreeNode}
  */
 var buildTree = function(preorder, inorder) {
-  //use recursion!
-    //base case 1: preorder and inorder are empty. 
-    if (!preorder.length) {
-        return null; 
-    }
     
-    const rootVal = preorder[0];
-    const root = new TreeNode(rootVal); 
-    
-    //base base 2: preorder and inorder consist of the root node only.
-    if (preorder.length === 1) {
+    function buildTreeUtil(pLo, iLo, num) {
+          //use recursion!
+        //base case 1: relevant segment of preorder and inorder are empty. 
+        if (num <= 0) {
+            return null; 
+        }
+
+        const rootVal = preorder[pLo];
+        const root = new TreeNode(rootVal); 
+
+        //base base 2: preorder and inorder consist of the root node only.
+        if (num === 1) {
+            return root; 
+        }
+
+        //general case    
+        //search for the index of root in inorder. 
+        const i = indexInRange(rootVal, inorder, iLo, iLo + num - 1);
+
+        //find num, pLo, iLo for the left branch
+        const leftNum = i - iLo; 
+        const pLoLeft = pLo + 1; 
+        const iLoLeft = iLo; 
+        
+        //find num, pLo, iLo for the right branch
+        const rightNum = num - leftNum - 1; 
+        const pLoRight = pLoLeft + leftNum; 
+        const iLoRight = i + 1; 
+
+        //recurse using the left and right branches of the pre and inorder arrays. 
+        const leftHead = buildTreeUtil(pLoLeft, iLoLeft, leftNum);
+        const rightHead = buildTreeUtil(pLoRight, iLoRight, rightNum);
+
+        root.left = leftHead; 
+        root.right = rightHead; 
         return root; 
     }
     
-    //general case    
-    //search for the index of root in inorder. 
-    const i = inorder.indexOf(rootVal);
-    
-    //there are (i)# of nodes in the left branch. 
-    //there are (inorder.length - i - 1)# of nodes in the right branch. 
-    
-    //partition preorder into left and right branches. 
-    const leftPre = preorder.slice(1, 1+i);
-    const rightPre = preorder.slice(1+i);
-    
-    //partition inorder into left and right branches.
-    const leftIn = inorder.slice(0, i);
-    const rightIn = inorder.slice(i + 1);
-    
-    //recurse using the left and right branches of the pre and inorder arrays. 
-    const leftHead = buildTree(leftPre, leftIn);
-    const rightHead = buildTree(rightPre, rightIn);
-    
-    root.left = leftHead; 
-    root.right = rightHead; 
-    return root; 
+    return buildTreeUtil(0, 0, preorder.length);
 };
+
+function indexInRange(val, arr, lo, hi) {
+    for (let i = lo; i <= hi; i++) {
+        if (arr[i] === val) {
+            return i; 
+        }
+    }
+    return -1; 
+}
