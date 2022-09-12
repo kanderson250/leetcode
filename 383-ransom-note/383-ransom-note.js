@@ -2,23 +2,33 @@
  * @param {string} ransomNote
  * @param {string} magazine
  * @return {boolean}
- */ 
+ */
+/*
+Input: two strings
+output: boolean
+
+Strategy: create a dict of the characters in magazine
+iterate over ransomNote
+if the character is a key for dict, and the associated value is positive, decrement the value and continue
+otherwise return false
+return true
+*/
 var canConstruct = function(ransomNote, magazine) {
-    //STRATEGY
-    //make a dict of magazine
-    //iterate through ransom note
-    //if letter of ransom note is in dict, decrease dict count and continue
-    //else return false
-    
-    const dict = {}; 
+    //create the dict
+    const dict = {};
     for (let char of magazine) {
-        dict[char] ? dict[char]++ : dict[char] = 1; 
+        if(!dict[char]) {
+            dict[char] = 0;
+        }
+        dict[char]++;
     }
+    //iterate over ransomNote
     for (let char of ransomNote) {
-        if (!dict[char]) {
-            return false; 
+        if(!dict[char]){
+            return false;
         }
         dict[char]--; 
     }
-    return true; 
+    return true;
+    
 };
